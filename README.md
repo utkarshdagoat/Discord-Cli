@@ -4,7 +4,7 @@ A sample command-line application with an entrypoint in `bin/`, library code
 in `lib/`.
 
 ## Install
-Clone this reop and run:<br>
+Clone this repo and run:<br>
 `dart pub add`<br>
 make sure you have dart version greater than 3.0
 
