@@ -1,9 +1,10 @@
 import 'package:crypt/crypt.dart';
 
 class User {
-  late String username = '';
-  late String password = '';
+  String username = '';
+  String password = '';
   String _tablename = "users";
+
   User({
     required String usrname,
     required String pass,

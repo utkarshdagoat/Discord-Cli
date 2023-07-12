@@ -25,11 +25,20 @@ class DB {
         username: _username, password: _password);
     await db._conn.open();
 
+    //creating users table
     await db._conn.query('''
     CREATE TABLE IF NOT EXISTS users(
       id serial primary key not null,
       username text,
       password text
+    )''');
+
+    //creating session table
+    await db._conn.query('''
+    CREATE TABLE IF NOT EXISTS sessions(
+      id serial primary key not null,
+      sessionkey text not null,
+      sessiondata text not null
     )
 ''');
 
