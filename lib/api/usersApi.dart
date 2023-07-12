@@ -9,4 +9,10 @@ class UserApi with BaseInput {
     Map<String, dynamic> inputs = BaseInput.get_inputs(User);
     return await Create.createUser(inputs);
   }
+
+  //todo
+  /* static Future<User> login() async {
+    Map<String, dynamic> inputs = BaseInput.get_inputs(User);
+
+  } */
 }
