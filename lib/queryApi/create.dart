@@ -11,14 +11,18 @@ class Create extends BaseApi {
     User user = User.fromMap(data);
     String sql = '''
         INSERT INTO users (username , password ) 
-        VALUES ('@username', '@password') returning id
+        VALUES (@username, @password) returning id
         ''';
     Map<String, dynamic> params = {
       "username": user.username,
-      "password": user.password,
+      "password": user.hashPwd(pass: user.password),
     };
-
-    await db.query(sql: sql, values: params);
+    try {
+      final response = await db.query(sql: sql, values: params);
+      print(response);
+    } catch (e) {
+      print(e);
+    }
 
     return user;
   }
@@ -29,12 +33,12 @@ class Create extends BaseApi {
     Session session = Session(username: username);
     String sql = '''
     INSERT INTO sessions (sessionkey , sessiondata)
-    VALUES('${session.sessionKey}' , ${session.sessionData})
+    VALUES( @sessionkey , @sessiondata)
     ''';
 
     Map<String, dynamic> params = {
       "sessionkey": session.sessionKey,
-      "password": session.sessionData,
+      "sessiondata": session.sessionData,
     };
 
     try {

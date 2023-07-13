@@ -1,6 +1,7 @@
+import 'dart:io';
+
 import 'package:postgres/postgres.dart';
 import 'package:dotenv/dotenv.dart' as dotenv;
-import 'dart:io';
 
 final env = dotenv.DotEnv(includePlatformEnvironment: true)
   ..load(['/home/utkarsh/Discord-Cli/discordcli/.env']);
@@ -12,46 +13,64 @@ class DB {
     final databaseUri = env["DATABASE_URI"].toString();
     final uriComponents = Uri.parse(databaseUri);
 
-    final _host = uriComponents.host;
-    final _port = 5432;
-    final _database = uriComponents.path.substring(1);
-    final _username = uriComponents.userInfo.split(':')[0];
-    final _password = uriComponents.userInfo.split(':')[1];
+    final host = uriComponents.host;
+    final port = 5432;
+    final database = uriComponents.path.substring(1);
+    final username = uriComponents.userInfo.split(':')[0];
+    final password = uriComponents.userInfo.split(':')[1];
     //print("${_host} ${_password} ${_port} ${_username} ${_database}");
 
     DB db = DB();
 
-    db._conn = PostgreSQLConnection(_host, _port, _database,
-        username: _username, password: _password);
-    await db._conn.open();
+    db._conn = PostgreSQLConnection(host, port, database,
+        username: username, password: password);
 
-    //creating users table
-    await db._conn.query('''
+    try {
+      await db._conn.open();
+
+      //creating users table
+      await db._conn.query('''
     CREATE TABLE IF NOT EXISTS users(
       id serial primary key not null,
       username text,
       password text
     )''');
 
-    //creating session table
-    await db._conn.query('''
+      //creating session table
+      await db._conn.query('''
     CREATE TABLE IF NOT EXISTS sessions(
       id serial primary key not null,
       sessionkey text not null,
       sessiondata text not null
     )
 ''');
-
-    print("Connected to server");
+    } on SocketException {
+      print("Please connect to the internet");
+      exit(5);
+    } catch (e) {
+      print("Unable to connect to DB");
+      exit(1);
+    }
     return db;
   }
 
   Future<List<dynamic>> query(
       {required String sql, required Map<String, dynamic> values}) async {
     try {
+      print(sql);
       return await _conn.query(sql, substitutionValues: values);
+    } on SocketException {
+      print("Please connect to the internet");
     } catch (e) {
-      return Future.value([]);
+      print(e);
+      print("Data Base Error Exiting...");
+      exit(1);
     }
+    return Future.value([]);
+  }
+
+  Future<bool> close() async {
+    await _conn.close();
+    return Future.value(true);
   }
 }
