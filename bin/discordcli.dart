@@ -1,16 +1,13 @@
 import 'package:discordcli/api/usersApi.dart';
 import 'dart:io';
+import 'package:discordcli/db/cacheDb.dart';
 
 Future<void> main(List<String> arguments) async {
+  await UserApi.persistLogin();
   while (true) {
     print("Enter command you want to use , type exit if you want to exit");
     final command = stdin.readLineSync().toString().toLowerCase();
     switch (command) {
-      case "register":
-        await UserApi.register();
-        break;
-      case "login":
-        await UserApi.login();
       case "logout":
         await UserApi.logout();
       case "exit":

@@ -1,9 +1,9 @@
 import 'package:crypt/crypt.dart';
+import 'dart:io';
 
 class User {
   String username = '';
   String password = '';
-  final String _tablename = "users";
 
   User({
     required String usrname,
@@ -11,9 +11,6 @@ class User {
   }) {
     username = usrname;
     password = pass;
-  }
-  String get tablename {
-    return _tablename;
   }
 
   String hashPwd({required String pass}) {
@@ -29,12 +26,13 @@ class User {
         usrname: map["username"].toString(),
         pass: map["password"].toString(),
       );
-  Map<String, String> toMap(List values) {
-    return {"id": values[0], "username": values[1], "password": values[2]};
-  }
+  Map<String, String> toMap(List values) =>
+      {"id": values[0], "username": values[1], "password": values[2]};
 
-  static User fromList(List<dynamic> list) =>
-      User(usrname: list[0][1], pass: list[0][2]);
+  User.fromList(List<dynamic> list) {
+    username = list[0][1];
+    password = list[0][2];
+  }
 
   @override
   String toString() {

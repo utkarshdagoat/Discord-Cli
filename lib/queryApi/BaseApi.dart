@@ -1,5 +1,6 @@
 import 'dart:async';
-import 'package:discordcli/db.dart';
+import 'package:discordcli/db/cacheDb.dart';
+import 'package:discordcli/db/db.dart';
 
 abstract class BaseApi {
   static late DB db;

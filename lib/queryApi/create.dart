@@ -19,7 +19,6 @@ class Create extends BaseApi {
     };
     try {
       final response = await db.query(sql: sql, values: params);
-      print(response);
     } catch (e) {
       print(e);
     }
@@ -27,20 +26,19 @@ class Create extends BaseApi {
     return user;
   }
 
-  static Future<Session> createSession({required String username}) async {
+  static Future<Session> createSession({required int user_id}) async {
     final db = await BaseApi.init();
 
-    Session session = Session(username: username);
+    Session session = Session(user_id: user_id);
     String sql = '''
-    INSERT INTO sessions (sessionkey , sessiondata)
-    VALUES( @sessionkey , @sessiondata)
+    INSERT INTO sessions (sessionkey , user_id)
+    VALUES( @sessionkey , @user_id)
     ''';
 
     Map<String, dynamic> params = {
       "sessionkey": session.sessionKey,
-      "sessiondata": session.sessionData,
+      "user_id": session.user_id,
     };
-
     try {
       await db.query(sql: sql, values: params);
     } catch (e) {

@@ -265,6 +265,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.4"
+  redis:
+    dependency: "direct main"
+    description:
+      name: redis
+      sha256: "32e28eb1ba2e0fe2af50bbd06e675e4dfdce4f0ba95c5bc885c72383a1b0b47e"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   sasl_scram:
     dependency: transitive
     description:
@@ -281,6 +289,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.2"
+  sembast:
+    dependency: "direct main"
+    description:
+      name: sembast
+      sha256: da8dd3774b6001bde09378da28e94c40bd4daecde32adb44837517c12e991321
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.4.9"
   shelf:
     dependency: transitive
     description:
@@ -361,6 +377,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.2.0"
+  synchronized:
+    dependency: transitive
+    description:
+      name: synchronized
+      sha256: "5fcbd27688af6082f5abd611af56ee575342c30e87541d0245f7ff99faa02c60"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   term_glyph:
     dependency: transitive
     description:
