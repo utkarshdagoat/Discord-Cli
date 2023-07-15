@@ -10,6 +10,7 @@ import 'package:discordcli/models/Session.dart';
 import 'package:discordcli/queryApi/create.dart';
 import 'package:discordcli/queryApi/delete.dart';
 import 'package:discordcli/queryApi/get_params.dart';
+import 'package:discordcli/queryApi/validation.dart';
 
 class UserApi with BaseInput {
   static late User user;
@@ -36,7 +37,8 @@ class UserApi with BaseInput {
         final response =
             await GetByParams.getUserByUsername(username: username);
 
-        final match = await GetByParams.isSeessionValid(userId: response["id"]);
+        final match =
+            await ValidationApi.isSeessionValid(userId: response["id"]);
         if (!match) {
           print("Please login again Session has ended");
           await login();
@@ -88,7 +90,7 @@ class UserApi with BaseInput {
 
   static Future<bool> isAuthenticated() async {
     try {
-      final result = await GetByParams.isSeessionValid(userId: userId);
+      final result = await ValidationApi.isSeessionValid(userId: userId);
       if (!result) {
         print("login first");
         return false;
@@ -107,7 +109,8 @@ class UserApi with BaseInput {
       try {
         await cache.delete();
         await Delete.deleteSession(userId);
-        print("logged out");
+        print("logged out.Thank you for using discord-cli");
+        exit(0);
       } catch (e) {
         print(e);
       }
