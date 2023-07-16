@@ -2,9 +2,11 @@ import 'dart:io';
 
 import 'package:discordcli/models/Session.dart';
 import 'package:discordcli/models/User.dart';
+import 'package:discordcli/models/channels.dart';
 import 'package:discordcli/models/server.dart';
 import 'package:discordcli/queryApi/BaseApi.dart';
 import 'package:discordcli/queryApi/get_params.dart';
+import 'package:discordcli/queryApi/validation.dart';
 
 class Create extends BaseApi {
   static Future<User> createUser(dynamic data) async {
@@ -114,6 +116,40 @@ class Create extends BaseApi {
     } catch (e) {
       print(e);
       exit(10);
+    }
+  }
+
+  static Future<void> createChannel(
+      {required int userId,
+      required String serverName,
+      required String channelName,
+      required channelType channelType}) async {
+    if (await ValidationApi.isModOfServer(
+            serverName: serverName, modId: userId) ||
+        await ValidationApi.isOwnerOfServer(
+            serverName: serverName, userId: userId)) {
+      final db = await BaseApi.init();
+      String sql = '''
+        INSERT INTO channels (channel_name , channel_type ,  server_name)
+        VALUES (@channel_name , @channel_type , @server_name)
+    ''';
+      //taking inputs
+      final Map<String, dynamic> params = {
+        "channel_name": channelName,
+        "channel_type": channelType.toString(),
+        "server_name": serverName
+      };
+      try {
+        final response = await db.query(sql: sql, values: params);
+        print(response);
+      } catch (e) {
+        print(e);
+        exit(11);
+      }
+    } else {
+      print("Nah fam who you try to fool");
+      print("You're not him brother get the hell out of here");
+      exit(11);
     }
   }
 }
