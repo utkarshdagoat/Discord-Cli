@@ -1,7 +1,6 @@
 //This file contains the user endpoints like register user , logout user
 //session creation logic
 import 'dart:io';
-import 'dart:math';
 import 'package:discordcli/db/cacheDb.dart';
 import "package:discordcli/helper/inputs.dart";
 import "package:discordcli/helper/late.dart";

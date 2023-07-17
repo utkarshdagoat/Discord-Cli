@@ -1,5 +1,4 @@
 import 'package:crypt/crypt.dart';
-import 'dart:io';
 
 class User {
   String username = '';

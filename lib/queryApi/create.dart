@@ -10,8 +10,6 @@ import 'package:discordcli/queryApi/validation.dart';
 
 class Create extends BaseApi {
   static Future<User> createUser(dynamic data) async {
-    final db = await BaseApi.init();
-
     User user = User.fromMap(data);
     String sql = '''
         INSERT INTO users (username , password ) 
@@ -22,7 +20,7 @@ class Create extends BaseApi {
       "password": user.hashPwd(pass: user.password),
     };
     try {
-      final response = await db.query(sql: sql, values: params);
+      final response = await BaseApi.db.query(sql: sql, values: params);
     } catch (e) {
       print(e);
     }
@@ -31,8 +29,6 @@ class Create extends BaseApi {
   }
 
   static Future<Session> createSession({required int user_id}) async {
-    final db = await BaseApi.init();
-
     Session session = Session(user_id: user_id);
     String sql = '''
     INSERT INTO sessions (sessionkey , user_id)
@@ -44,7 +40,7 @@ class Create extends BaseApi {
       "user_id": session.user_id,
     };
     try {
-      await db.query(sql: sql, values: params);
+      await BaseApi.db.query(sql: sql, values: params);
     } catch (e) {
       print('Invalid Session logic');
       print(e);
@@ -56,7 +52,6 @@ class Create extends BaseApi {
 
   static Future<Server> createServer(
       {required int userId, required String serverName}) async {
-    final db = await BaseApi.init();
     Server server = Server(name: serverName, userId: userId);
     String sql = '''
     INSERT INTO servers (server_name , owner_id )
@@ -67,7 +62,7 @@ class Create extends BaseApi {
       "owner_id": server.owner,
     };
     try {
-      final response = await db.query(sql: sql, values: params);
+      final response = await BaseApi.db.query(sql: sql, values: params);
       print(response);
     } catch (e) {
       print(e);
@@ -77,18 +72,17 @@ class Create extends BaseApi {
   }
 
   static Future<dynamic> joinServer(
-      {required int userId, required int serverId}) async {
-    final db = await BaseApi.init();
+      {required int userId, required String serverName}) async {
     String sql = '''
-    INSERT INTO server_users (server_id , user_id )
-    VALUES (@server_id , @user_id)
+    INSERT INTO server_users (user_id ,  server_name)
+    VALUES (@user_id , @server_name)
 ''';
     Map<String, dynamic> params = {
-      "server_id": serverId,
+      "server_name": serverName,
       "user_id": userId,
     };
     try {
-      final response = await db.query(sql: sql, values: params);
+      final response = await BaseApi.db.query(sql: sql, values: params);
       return response;
     } catch (e) {
       print(e);
@@ -99,7 +93,6 @@ class Create extends BaseApi {
   static Future<void> addMod({required String serverName}) async {
     print("Username of the user you want to add as mod");
     String username = stdin.readLineSync().toString();
-    final db = await BaseApi.init();
     String sql = '''
     INSERT INTO server_mods (server_name , mod_id )
     VALUES (@server_name , @mod_id) 
@@ -111,7 +104,7 @@ class Create extends BaseApi {
         "server_name": serverName,
         "mod_id": modId
       };
-      final response = await db.query(sql: sql, values: params);
+      final response = await BaseApi.db.query(sql: sql, values: params);
       print(response);
     } catch (e) {
       print(e);
@@ -128,9 +121,8 @@ class Create extends BaseApi {
             serverName: serverName, modId: userId) ||
         await ValidationApi.isOwnerOfServer(
             serverName: serverName, userId: userId)) {
-      final db = await BaseApi.init();
       String sql = '''
-        INSERT INTO channels (channel_name , channel_type ,  server_name)
+        INSERT INTO Channel (channel_name , channel_type ,  server_name)
         VALUES (@channel_name , @channel_type , @server_name)
     ''';
       //taking inputs
@@ -140,7 +132,7 @@ class Create extends BaseApi {
         "server_name": serverName
       };
       try {
-        final response = await db.query(sql: sql, values: params);
+        final response = await BaseApi.db.query(sql: sql, values: params);
         print(response);
       } catch (e) {
         print(e);
@@ -149,6 +141,52 @@ class Create extends BaseApi {
     } else {
       print("Nah fam who you try to fool");
       print("You're not him brother get the hell out of here");
+      exit(11);
+    }
+  }
+
+  static Future<void> createChannelMessage(
+      {required String messageText,
+      required int channelId,
+      required int userId}) async {
+    String sql = '''
+  INSERT INTO message_channel (channel_id , sender , message)
+  VALUES (@channel_id , @sender , @message)
+''';
+    final Map<String, dynamic> params = {
+      "channel_id": channelId,
+      "sender": userId,
+      "message": messageText
+    };
+    try {
+      await BaseApi.db.query(sql: sql, values: params);
+      print("Message sent");
+    } catch (e) {
+      print(e);
+      exit(11);
+    }
+  }
+
+  static Future<void> createDmMessage(
+      {required String messageText,
+      required int sender,
+      required String toSendUsername}) async {
+    final user =
+        await GetByParams.getUserByUsernameForDm(username: toSendUsername);
+    String sql = '''
+  INSERT INTO message_dm (to_send , sender , message)
+  VALUES (@to_send , @sender , @message)
+''';
+    final Map<String, dynamic> params = {
+      "to_send": user["id"],
+      "sender": sender,
+      "message": messageText
+    };
+    try {
+      await BaseApi.db.query(sql: sql, values: params);
+      print("Message sent");
+    } catch (e) {
+      print(e);
       exit(11);
     }
   }

@@ -1,7 +1,4 @@
-import 'package:crypt/crypt.dart';
-import 'package:discordcli/api/usersApi.dart';
 import 'package:uuid/uuid.dart';
-import 'dart:io';
 
 final uuid = Uuid();
 
