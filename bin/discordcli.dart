@@ -18,6 +18,7 @@ Future<void> main(List<String> arguments) async {
       'create server',
       'join server',
       'make mod',
+      'create channel',
       'join channel',
       'send dm',
       'fetch dm',

@@ -117,8 +117,8 @@ class Create extends BaseApi {
         await ValidationApi.isOwnerOfServer(
             serverName: serverName, userId: userId)) {
       String sql = '''
-        INSERT INTO Channel (channel_name , channel_type ,  server_name)
-        VALUES (@channel_name , @channel_type , @server_name)
+        INSERT INTO channels (channel_name , channel_type ,  server_name)
+        VALUES (@channel_name , @channel_type , @server_name) RETURNING *
     ''';
       //taking inputs
       final Map<String, dynamic> params = {
@@ -128,7 +128,9 @@ class Create extends BaseApi {
       };
       try {
         final response = await BaseApi.db.query(sql: sql, values: params);
-        print(response);
+        if (response.isNotEmpty) {
+          Logs.logger.success('\n $channelName succefully created');
+        }
       } catch (e) {
         Logs.logger.err(e.toString());
       }
