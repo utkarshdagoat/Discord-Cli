@@ -10,6 +10,7 @@ import 'package:discordcli/queryApi/create.dart';
 import 'package:discordcli/queryApi/delete.dart';
 import 'package:discordcli/queryApi/get_params.dart';
 import 'package:discordcli/queryApi/validation.dart';
+import 'package:discordcli/logger/log.dart';
 
 class UserApi with BaseInput {
   static late User user;
@@ -22,6 +23,7 @@ class UserApi with BaseInput {
   static Future<User> register() async {
     Map<String, dynamic> inputs = BaseInput.get_inputs(User);
     user = await Create.createUser(inputs);
+    Logs.logger.success('\nYou are Registered SuccessFully');
     return user;
   }
 
@@ -39,17 +41,16 @@ class UserApi with BaseInput {
         final match =
             await ValidationApi.isSeessionValid(userId: response["id"]);
         if (!match) {
-          print("Please login again Session has ended");
+          Logs.logger.info("Please login again Session has ended");
           await login();
         } else {
           user = response["user"];
           userId = response["id"];
-          print(
-              "Welcome back ${user.username}. What would you like to do today?");
+          Logs.logger.detail(
+              "\n Welcome back ${user.username}. What would you like to do today?");
         }
       } catch (e) {
-        print(e);
-
+        Logs.logger.err;
         exit(10);
       }
     }
@@ -63,6 +64,8 @@ class UserApi with BaseInput {
     bool match = false;
     int loginTrys = 3;
     while (!match && loginTrys > 0) {
+      Logs.logger.warn(
+          '\nIf you are seeing this for the first time enter any gibberish');
       Map<String, dynamic> inputs = BaseInput.get_inputs(User);
       try {
         final res =
@@ -74,12 +77,13 @@ class UserApi with BaseInput {
         if (match) {
           session = await Create.createSession(user_id: await res["id"]);
           userId = res["id"];
-          print("Logged in successfully");
+          Logs.logger.success("\nLogged in successfully");
         } else {
-          print("Invalid credentials. You have $loginTrys left");
+          Logs.logger
+              .warn('\n' "Invalid credentials. You have $loginTrys left");
         }
       } catch (e) {
-        print(e);
+        Logs.logger.err(e.toString());
         print("Some Error Occured");
         exit(6);
       }
@@ -108,10 +112,10 @@ class UserApi with BaseInput {
       try {
         await cache.delete();
         await Delete.deleteSession(userId);
-        print("logged out.Thank you for using discord-cli");
+        Logs.logger.success("\nlogged out.Thank you for using discord-cli");
         exit(0);
       } catch (e) {
-        print(e);
+        Logs.logger.err(e.toString());
       }
     }
   }

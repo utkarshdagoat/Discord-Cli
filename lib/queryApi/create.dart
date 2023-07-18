@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:discordcli/models/Session.dart';
 import 'package:discordcli/models/User.dart';
 import 'package:discordcli/models/channels.dart';
@@ -7,6 +6,7 @@ import 'package:discordcli/models/server.dart';
 import 'package:discordcli/queryApi/BaseApi.dart';
 import 'package:discordcli/queryApi/get_params.dart';
 import 'package:discordcli/queryApi/validation.dart';
+import 'package:discordcli/logger/log.dart';
 
 class Create extends BaseApi {
   static Future<User> createUser(dynamic data) async {
@@ -22,7 +22,7 @@ class Create extends BaseApi {
     try {
       final response = await BaseApi.db.query(sql: sql, values: params);
     } catch (e) {
-      print(e);
+      Logs.logger.err(e.toString());
     }
 
     return user;
@@ -42,8 +42,7 @@ class Create extends BaseApi {
     try {
       await BaseApi.db.query(sql: sql, values: params);
     } catch (e) {
-      print('Invalid Session logic');
-      print(e);
+      Logs.logger.err(e.toString());
       exit(2);
     }
 
@@ -63,11 +62,9 @@ class Create extends BaseApi {
     };
     try {
       final response = await BaseApi.db.query(sql: sql, values: params);
-      print(response);
     } catch (e) {
-      print(e);
+      Logs.logger.err(e.toString());
     }
-
     return server;
   }
 
@@ -85,8 +82,7 @@ class Create extends BaseApi {
       final response = await BaseApi.db.query(sql: sql, values: params);
       return response;
     } catch (e) {
-      print(e);
-      exit(10);
+      Logs.logger.err(e.toString());
     }
   }
 
@@ -107,8 +103,7 @@ class Create extends BaseApi {
       final response = await BaseApi.db.query(sql: sql, values: params);
       print(response);
     } catch (e) {
-      print(e);
-      exit(10);
+      Logs.logger.err(e.toString());
     }
   }
 
@@ -135,8 +130,7 @@ class Create extends BaseApi {
         final response = await BaseApi.db.query(sql: sql, values: params);
         print(response);
       } catch (e) {
-        print(e);
-        exit(11);
+        Logs.logger.err(e.toString());
       }
     } else {
       print("Nah fam who you try to fool");
@@ -162,8 +156,7 @@ class Create extends BaseApi {
       await BaseApi.db.query(sql: sql, values: params);
       print("Message sent");
     } catch (e) {
-      print(e);
-      exit(11);
+      Logs.logger.err(e.toString());
     }
   }
 
@@ -186,8 +179,7 @@ class Create extends BaseApi {
       await BaseApi.db.query(sql: sql, values: params);
       print("Message sent");
     } catch (e) {
-      print(e);
-      exit(11);
+      Logs.logger.err(e.toString());
     }
   }
 }

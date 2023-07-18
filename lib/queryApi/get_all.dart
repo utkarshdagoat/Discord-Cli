@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:discordcli/models/message.dart';
 import 'package:discordcli/queryApi/BaseApi.dart';
-import 'package:discordcli/queryApi/get_params.dart';
+import 'package:discordcli/logger/log.dart';
 
 class GetAll {
   static Future<List<dynamic>> allUsers() async {
@@ -31,7 +31,7 @@ class GetAll {
       }
       return fetchedMessages;
     } catch (e) {
-      print(e);
+      Logs.logger.err(e.toString());
       exit(10);
     }
   }
@@ -53,7 +53,7 @@ class GetAll {
       }
       return fetchedMessages;
     } catch (e) {
-      print(e);
+      Logs.logger.err(e.toString());
       exit(10);
     }
   }
