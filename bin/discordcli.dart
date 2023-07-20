@@ -1,3 +1,4 @@
+import 'package:discordcli/api/categoryApi.dart';
 import 'package:discordcli/api/channelApi.dart';
 import 'package:discordcli/api/messageApi.dart';
 import 'package:discordcli/api/serverApi.dart';
@@ -17,9 +18,7 @@ Future<void> main(List<String> arguments) async {
         Logs.logger.chooseOne('What would you like to do today?', choices: [
       'create server',
       'join server',
-      'make mod',
-      'create channel',
-      'join channel',
+      'checkout your servers',
       'send dm',
       'fetch dm',
       'logout',
@@ -42,55 +41,32 @@ Future<void> main(List<String> arguments) async {
         await ServerApi.createServer();
         break;
       case "join server":
-        print("Server Name");
-        String name = stdin.readLineSync().toString();
         await Logs.waiting(message: 'Joining server...');
         print('\n');
-        await ServerApi.joinServer(serverName: name);
+        await ServerApi.joinServer();
         break;
-      case "make mod":
-        await ServerApi.makeMod();
-        await Logs.waiting(message: 'Making mod..');
-        print('\n');
-        break;
-      case "create channel":
-        await Logs.waiting(message: 'Creating channel..');
-        print('\n');
-        await ChannelApi.createChannel();
-        break;
-      case "join channel":
-        await Logs.waiting(message: 'Joining channel..');
-        print('\n');
-        await ChannelApi.enterChannel();
-        bool joinedChannel = true;
-
-        while (joinedChannel) {
-          final response = Logs.logger.chooseOne(
-              'What would you like to do today?',
-              choices: ['send', 'fetch', 'exit channel']);
-          switch (response) {
-            case "send":
-              await Logs.waiting(message: 'sending..');
-              print('\n');
-              await ChannelApi.sendMessage();
-              break;
-            case "fetch":
-              Logs.waiting(message: 'fetching..');
-              print('\n');
-              await ChannelApi.fetchMessage();
-              break;
-            case "exit channel":
-              Logs.logger.warn('Exiting channel....');
-              print('\n');
-              joinedChannel = false;
-              break;
-            default:
-              print(
-                  'Invalid command in a channel.Maybe you want to exit first see docs for more');
-              break;
+      case "checkout your servers":
+        final res = await ServerApi.showingServers();
+        if (res["serverJoined"]) {
+          while (await CategoryApi.showCategories()) {
+            while (await ChannelApi.showAllChannelInCategories()) {
+              final command = Logs.logger.chooseOne(
+                  'What would you like to do today?',
+                  choices: ['send messages', 'fetch messages', 'exit']);
+              switch (command) {
+                case 'send messages':
+                  await ChannelApi.sendMessage();
+                  break;
+                case 'fetch messages':
+                  await ChannelApi.fetchMessage();
+                  break;
+                case 'exit':
+                  print('Thank you for using discord-cli');
+                  exit(11);
+              }
+            }
           }
         }
-        break;
       case "send dm":
         await Logs.waiting(message: 'Sending....');
         print('\n');
