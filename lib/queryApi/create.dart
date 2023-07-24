@@ -1,12 +1,9 @@
-import 'dart:html';
 import 'dart:io';
 import 'package:discordcli/models/Session.dart';
 import 'package:discordcli/models/User.dart';
 import 'package:discordcli/models/channels.dart';
-import 'package:discordcli/models/server.dart';
 import 'package:discordcli/queryApi/BaseApi.dart';
 import 'package:discordcli/queryApi/get_params.dart';
-import 'package:discordcli/queryApi/validation.dart';
 import 'package:discordcli/logger/log.dart';
 import 'package:discordcli/sql/create.dart';
 import 'package:discordcli/sql/delete.dart';
@@ -17,8 +14,8 @@ class Create extends BaseApi {
     User user = User.fromMap(data);
     String sql = sqlCreate.USERS;
     Map<String, dynamic> params = {
-      "username": user.username,
-      "password": user.hashPwd(pass: user.password),
+      "username": user.getUsername,
+      "password": User.hashPwd(pass: user.getPass),
     };
     try {
       await BaseApi.db.query(sql: sql, values: params);

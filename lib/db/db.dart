@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'package:discordcli/helper/duplicate.dart';
-import 'package:discordcli/helper/server.dart';
 import 'package:postgres/postgres.dart';
 import 'package:dotenv/dotenv.dart' as dotenv;
 import 'package:discordcli/helper/unique.dart';

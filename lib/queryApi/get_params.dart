@@ -1,7 +1,5 @@
 import 'dart:io';
-import 'package:discordcli/api/usersApi.dart';
 import 'package:discordcli/models/User.dart';
-import 'package:discordcli/models/server.dart';
 import 'package:discordcli/queryApi/BaseApi.dart';
 import 'package:discordcli/logger/log.dart';
 import 'package:discordcli/sql/get_params.dart';
@@ -16,7 +14,7 @@ class GetByParams extends BaseApi {
       if (response.isEmpty) {
         print("Oh You're new here Register first");
         print("Don't worry we will try to remember you after this");
-        await UserApi.register();
+        await User.register();
         print("start once again for validation");
         exit(10);
       } else {

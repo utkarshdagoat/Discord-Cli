@@ -1,17 +1,17 @@
-import 'package:discordcli/api/categoryApi.dart';
-import 'package:discordcli/api/channelApi.dart';
-import 'package:discordcli/api/messageApi.dart';
-import 'package:discordcli/api/serverApi.dart';
-import 'package:discordcli/api/usersApi.dart';
-import 'package:discordcli/queryApi/BaseApi.dart';
 import 'dart:io';
 import 'package:discordcli/logger/log.dart';
+import 'package:discordcli/models/category.dart';
+import 'package:discordcli/models/server.dart';
+import 'package:discordcli/models/User.dart';
+import 'package:discordcli/models/message.dart';
+import 'package:discordcli/models/channels.dart';
+import 'package:discordcli/queryApi/BaseApi.dart';
 
 Future<void> main(List<String> arguments) async {
   await Logs.intialProg(message: 'Trying to logging you in');
   print('\n');
   await BaseApi.init();
-  await UserApi.persistLogin();
+  await User.persistLogin();
   print('\n');
   while (true) {
     final command =
@@ -28,7 +28,7 @@ Future<void> main(List<String> arguments) async {
       case "logout":
         await Logs.waiting(message: 'Trying to logging you out');
         print('\n');
-        await UserApi.logout();
+        await User.logout();
         break;
       case "exit":
         await Logs.waiting(message: 'Exiting...');
@@ -38,27 +38,27 @@ Future<void> main(List<String> arguments) async {
       case "create server":
         await Logs.waiting(message: 'Creating Server...');
         print('\n');
-        await ServerApi.createServer();
+        await Server.createServer();
         break;
       case "join server":
         await Logs.waiting(message: 'Joining server...');
         print('\n');
-        await ServerApi.joinServer();
+        await Server.joinServer();
         break;
       case "checkout your servers":
-        final res = await ServerApi.showingServers();
+        final res = await Server.showingServers();
         if (res["serverJoined"]) {
-          while (await CategoryApi.showCategories()) {
-            while (await ChannelApi.showAllChannelInCategories()) {
+          while (await Category.showCategories()) {
+            while (await Channel.showAllChannelInCategories()) {
               final command = Logs.logger.chooseOne(
                   'What would you like to do today?',
                   choices: ['send messages', 'fetch messages', 'exit']);
               switch (command) {
                 case 'send messages':
-                  await ChannelApi.sendMessage();
+                  await Channel.sendMessage();
                   break;
                 case 'fetch messages':
-                  await ChannelApi.fetchMessage();
+                  await Channel.fetchMessage();
                   break;
                 case 'exit':
                   print('Thank you for using discord-cli');
@@ -70,12 +70,12 @@ Future<void> main(List<String> arguments) async {
       case "send dm":
         await Logs.waiting(message: 'Sending....');
         print('\n');
-        await MessageApi.sendMessage();
+        await Message.sendMessage();
         break;
       case "fetch dm":
         await Logs.waiting(message: 'fetching....');
         print('\n');
-        await MessageApi.fetchDmMessage();
+        await Message.fetchDmMessage();
         break;
       default:
         print("Not a valid command see docs!!");
